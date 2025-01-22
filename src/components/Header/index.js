@@ -11,12 +11,11 @@ const statusBarHeight = StatusBar.currentHeight ? StatusBar.currentHeight + 22: 
 
 import { Feather } from '@expo/vector-icons'
 
-export default function Header(){
+export default function Header(props){
     return(
         <View style={styles.container}>
             <View style={styles.content}>
-                <Text style={styles.username}>João</Text>
-
+                <Text style={styles.username}>Olá {props.usuario}</Text>
                 <TouchableOpacity activeOpacity={0.7} style={styles.buttonUser}>
                     <Feather name="user" size={27} color={'#FFF'}></Feather>
                 </TouchableOpacity>
@@ -30,8 +29,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#8000ff',
         paddingTop: statusBarHeight,
         flexDirection: 'row',
-        paddingStart: 16,
-        paddingEnd: 16,
+        paddingStart: '5%',
+        paddingEnd: '5%',
         paddingBottom: 44
     },
     content:{

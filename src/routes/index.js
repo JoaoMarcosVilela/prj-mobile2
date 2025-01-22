@@ -3,7 +3,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import BemVindo from "../pages/BemVindo";
 import Home from "../pages/home";
 import Login from "../pages/Login";
-import Cadastro from "../pages/Cadastro"
+import CadastroUsuario from "../pages/CadastroUsuario";
+import CadastroMovimentacao from "../pages/CadastroMovimentacao";
+import MostarBanco from "../pages/MostrarBanco";
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +20,7 @@ export default function Routes(){
             <Stack.Screen
                 name="Home"
                 component={Home}
+                options={{ headerShown: false}}
             />
             <Stack.Screen
                 name="Login"
@@ -25,8 +28,18 @@ export default function Routes(){
                 options={{ headerShown: false}}
             />
             <Stack.Screen
-                name="Cadastro"
-                component={Cadastro}
+                name="CadastroUsuario"
+                component={CadastroUsuario}
+                options={{ headerShown: false}}
+            />
+            <Stack.Screen
+                name="CadastroMovimentacao"
+                component={CadastroMovimentacao}
+                options={{ headerShown: false}}
+            />
+            <Stack.Screen
+                name="Teste"
+                component={MostarBanco}
                 options={{ headerShown: false}}
             />
         </Stack.Navigator>
