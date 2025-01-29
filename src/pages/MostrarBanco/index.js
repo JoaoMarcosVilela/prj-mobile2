@@ -57,6 +57,7 @@ export default function MostarBanco(){
             newArray.push({
                 id: row.id,
                 usuario: row.usuario,
+                nome: row.nome,
                 senha: row.senha
             });
         }

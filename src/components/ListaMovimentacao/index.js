@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     item: {
         backgroundColor: '#fff',
         marginTop: 2,
-        marginBottom: 8,
+        marginBottom: '5%',
         borderRadius: 5,
     },
     itemData: {

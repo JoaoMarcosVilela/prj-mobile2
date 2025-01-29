@@ -5,7 +5,6 @@ import { useRoute } from '@react-navigation/native';
 import Header from '../../components/Header';
 import Balanco from '../../components/Balanco';
 import ListaMovimentacao from '../../components/ListaMovimentacao';
-import { useState } from 'react';
 import Acoes from '../../components/Acoes';
 
 const list = [

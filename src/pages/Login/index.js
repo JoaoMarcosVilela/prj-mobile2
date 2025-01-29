@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
 import * as SQLite from 'expo-sqlite';
@@ -33,7 +33,9 @@ export default function Login() {
         const db = await SQLite.openDatabaseAsync('databaseUsuarios');
         const result = await db.getFirstAsync('SELECT * FROM usuarios WHERE usuario = ? AND senha = ?', [inputUsuario, inputSenha]);
         if (result) {
-            navigate.navigate('Home', { usuario: result.usuario, id: result.id });
+            setInputUsuarios('');
+            setInputSenha('');
+            navigate.navigate('Home', { usuario: result.nome, id: result.id });
         } else {
             showError('Usuário e senha inválidos ou usuário não cadastrado');
         }
@@ -48,9 +50,10 @@ export default function Login() {
 
 
 
-            <View style={styles.containerForm}>
+            <ScrollView scrollEnabled={false} style={styles.containerForm}>
                 <Text style={styles.title}>Usuário</Text>
                 <TextInput
+                    value={inputUsuario}
                     placeholder="Digite o usuário"
                     style={styles.input}
                     onChangeText={setInputUsuarios}
@@ -58,6 +61,7 @@ export default function Login() {
 
                 <Text style={styles.title}>Senha</Text>
                 <TextInput
+                    value={inputSenha}
                     placeholder="Sua senha"
                     style={styles.input}
                     secureTextEntry={true}
@@ -85,7 +89,7 @@ export default function Login() {
                     <Text style={styles.testeText}>TESTE</Text>
                 </TouchableOpacity>
 
-            </View>
+            </ScrollView>
 
 
         </View>

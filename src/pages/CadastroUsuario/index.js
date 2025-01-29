@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
 import * as SQLite from 'expo-sqlite';
@@ -11,6 +11,7 @@ export default function CadastroUsuario() {
 
     const [listUsuarios, setListUsuarios] = useState([]);
     const [inputUsuario, setInputUsuario] = useState('');
+    const [inputUsuarioNome, setInputUsuarioNome] = useState('');
     const [inputSenha, setInputSenha] = useState('');
     const [inputSenhaVilidacao, setInputSenhaVilidacao] = useState('');
 
@@ -27,24 +28,26 @@ export default function CadastroUsuario() {
     const add = async () => {
         const db = await SQLite.openDatabaseAsync('databaseUsuarios');
         if (inputUsuario === '' || inputSenha === '') {
-            console.log('Por favor, preencha todos os campos');
             showError('Por favor, preencha todos os campos');
+        }else if(inputUsuario.length < 5){
+            showError('A usuario deve ter pelo menos 5 caracteres');
         } else if (inputSenha === '' || inputSenhaVilidacao === '') {
-            console.log('As duas senhas são obrigatórias');
             showError('As duas senhas são obrigatórias');
         } else if (inputSenha !== inputSenhaVilidacao) {
-            console.log('As senhas não coincidem');
             showError('As senhas não coincidem');
+        } else if(inputSenha.length < 6){
+            showError('A senha deve ter pelo menos 6 caracteres')
         } else {
             try {
                 const result = await db.getFirstAsync('SELECT * FROM usuarios WHERE usuario = ?', [inputUsuario]);
                 if (result) {
                     showError('Usuario já cadastradado cadastrado');
                     setInputUsuario('');
+                    setInputUsuarioNome('');
                     setInputSenha('');
                     setInputSenhaVilidacao('')
                 } else {
-                    await db.runAsync('INSERT INTO usuarios (usuario, senha) VALUES (?, ?)', inputUsuario, inputSenha);
+                    await db.runAsync('INSERT INTO usuarios (usuario, nome, senha) VALUES (?, ?, ?)', inputUsuario, inputUsuarioNome, inputSenha);
                     navigate.navigate('Login');
                 }
             } catch (error) {
@@ -57,16 +60,8 @@ export default function CadastroUsuario() {
         const db = await SQLite.openDatabaseAsync('databaseUsuarios');
         await db.execAsync(`
                   PRAGMA journal_mode = WAL;
-                  CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY NOT NULL, usuario TEXT NOT NULL, senha TEXT NOT NULL);
+                  CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY NOT NULL, usuario TEXT NOT NULL, nome TEXT NOT NULL, senha TEXT NOT NULL);
                   `);
-        const allRows = await db.getAllAsync('SELECT * FROM usuarios');
-        let newArray = [];
-        for (const row of allRows) {
-            // console.log(row.id, row.usuario, row.senha);
-            newArray.push(row.usuario);
-        }
-        setListUsuarios(newArray);
-        console.log(listUsuarios)
     }
 
     return (
@@ -77,13 +72,21 @@ export default function CadastroUsuario() {
                 <Text style={styles.boasVindas}>Cadastro</Text>
             </View>
 
-            <View style={styles.containerForm}>
+            <ScrollView scrollEnabled={false} style={styles.containerForm}>
                 <Text style={styles.title}>Usuário</Text>
                 <TextInput
                     placeholder="Digite seu usuario"
                     style={styles.input}
                     value={inputUsuario}
                     onChangeText={setInputUsuario}
+                />
+
+                <Text style={styles.title}>Nome</Text>
+                <TextInput
+                    placeholder="Digite seu nome"
+                    style={styles.input}
+                    value={inputUsuarioNome}
+                    onChangeText={setInputUsuarioNome}
                 />
 
                 <Text style={styles.title}>Senha</Text>
@@ -116,7 +119,7 @@ export default function CadastroUsuario() {
                 >
                     <Text style={styles.registerText}>Voltar</Text>
                 </TouchableOpacity>
-            </View>
+            </ScrollView >
 
 
         </View>

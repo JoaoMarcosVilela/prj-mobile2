@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Button } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Button, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import * as SQLite from 'expo-sqlite';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -70,11 +70,15 @@ export default function CadastroMovimentacao() {
             await db.runAsync('INSERT INTO movimentacoes (id_usuario, titulo, valor, data, tipo) VALUES (?, ?, ?, ?, ?)',
                 idUsuario, inputTitulo, inputValor, formattedDate, 0
             );
+            setInputTitulo('');
+            setInputValor('');
             navigation.navigate('Home', { usuario: usuario, id: idUsuario });
         } else {
             await db.runAsync('INSERT INTO movimentacoes (id_usuario, titulo, valor, data, tipo) VALUES (?, ?, ?, ?, ?)',
                 idUsuario, inputTitulo, inputValor, formattedDate, 1
             );
+            setInputTitulo('');
+            setInputValor('');
             navigation.navigate('Home', { usuario: usuario, id: idUsuario });
         }
     }
@@ -139,7 +143,7 @@ export default function CadastroMovimentacao() {
                 <Text style={styles.boasVindas}>Adicionar nova movimentação</Text>
             </View>
 
-            <View style={styles.containerForm}>
+            <ScrollView scrollEnabled={false} style={styles.containerForm}>
                 <Text>Título</Text>
                 <TextInput
                     placeholder="Digite o título"
@@ -198,7 +202,7 @@ export default function CadastroMovimentacao() {
                     </TouchableOpacity>
                 )}
 
-            </View>
+            </ScrollView>
         </View>
     );
 }
