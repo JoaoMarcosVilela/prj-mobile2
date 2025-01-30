@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
 import * as SQLite from 'expo-sqlite';
 import { Alert } from 'react-native';
+import { TextInput } from "react-native-paper";
 
 export default function CadastroUsuario() {
 
     const navigate = useNavigation()
 
-    const [listUsuarios, setListUsuarios] = useState([]);
+    const [mostrarSenha, setMostrarSenha] = useState(false);
     const [inputUsuario, setInputUsuario] = useState('');
     const [inputUsuarioNome, setInputUsuarioNome] = useState('');
     const [inputSenha, setInputSenha] = useState('');
@@ -20,6 +21,10 @@ export default function CadastroUsuario() {
     useEffect(() => {
         getLista()
     }, [])
+
+    const mudarVisibilidadeSenha = () => {
+        setMostrarSenha(!mostrarSenha);
+    };
 
     const showError = (message) => {
         Alert.alert("Erro", message, [{ text: "OK" }]);
@@ -95,7 +100,8 @@ export default function CadastroUsuario() {
                     style={styles.input}
                     value={inputSenha}
                     onChangeText={setInputSenha}
-                    secureTextEntry={true}
+                    secureTextEntry={!mostrarSenha}
+                    right={<TextInput.Icon icon={mostrarSenha ? 'eye' : 'eye-off'} onPress={mudarVisibilidadeSenha} />}
                 />
 
                 <Text style={styles.title}>Confirme a senha</Text>
@@ -104,7 +110,7 @@ export default function CadastroUsuario() {
                     style={styles.input}
                     value={inputSenhaVilidacao}
                     onChangeText={setInputSenhaVilidacao}
-                    secureTextEntry={true}
+                    secureTextEntry={!mostrarSenha}
                 />
 
                 <TouchableOpacity style={styles.button}

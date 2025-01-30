@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+
+import { TextInput } from "react-native-paper";
 
 import { useNavigation } from "@react-navigation/native";
 import * as SQLite from 'expo-sqlite';
@@ -11,7 +13,7 @@ export default function Login() {
 
     const [inputUsuario, setInputUsuarios] = useState('');
     const [inputSenha, setInputSenha] = useState('');
-    const [error, setError] = useState('');
+    const [mostrarSenha, setMostrarSenha] = useState(false);
 
     useEffect(() => {
         getLista()
@@ -19,6 +21,10 @@ export default function Login() {
 
     const showError = (message) => {
         Alert.alert("Erro", message, [{ text: "OK" }]);
+    };
+
+    const mudarVisibilidadeSenha = () => {
+        setMostrarSenha(!mostrarSenha);
     };
 
     async function getLista() {
@@ -57,6 +63,7 @@ export default function Login() {
                     placeholder="Digite o usuário"
                     style={styles.input}
                     onChangeText={setInputUsuarios}
+                    inlineImageLeft=''
                 />
 
                 <Text style={styles.title}>Senha</Text>
@@ -64,10 +71,12 @@ export default function Login() {
                     value={inputSenha}
                     placeholder="Sua senha"
                     style={styles.input}
-                    secureTextEntry={true}
+                    secureTextEntry={!mostrarSenha}
                     onChangeText={setInputSenha}
+                    right={<TextInput.Icon icon={mostrarSenha ? 'eye' : 'eye-off'} onPress={mudarVisibilidadeSenha} />}
+                    
                 />
-
+                
                 <TouchableOpacity
                     style={styles.button}
                     onPress={verificacao}

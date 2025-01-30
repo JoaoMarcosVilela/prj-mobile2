@@ -26,6 +26,15 @@ export default function Acoes({idUsuario, usuarioName}) {
             <TouchableOpacity style={styles.actionButton} onPress={() => navigation.navigate('Login')}>
 
                 <View style={styles.areaButton}>
+                    <MaterialCommunityIcons name='delete' size={26} color={'#000'} />
+                </View>
+                <Text style={styles.textoButton}>Apagar conta</Text>
+
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.actionButton} onPress={() => navigation.navigate('Login')}>
+
+                <View style={styles.areaButton}>
                     <MaterialCommunityIcons name='exit-to-app' size={26} color={'#000'} />
                 </View>
                 <Text style={styles.textoButton}>Sair</Text>
