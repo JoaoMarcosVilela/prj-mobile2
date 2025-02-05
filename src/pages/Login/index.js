@@ -80,13 +80,12 @@ export default function Login() {
 
 
             <ScrollView scrollEnabled={false} style={styles.containerForm}>
-                <Text style={styles.title}>Usuário</Text>
+                <Text style={styles.title}>Email</Text>
                 <TextInput
                     value={inputUsuario}
-                    placeholder="Digite o usuário"
+                    placeholder="Digite seu email"
                     style={styles.input}
                     onChangeText={setInputUsuarios}
-                    inlineImageLeft=''
                 />
 
                 <Text style={styles.title}>Senha</Text>

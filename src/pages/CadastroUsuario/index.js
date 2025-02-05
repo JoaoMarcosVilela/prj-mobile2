@@ -119,9 +119,9 @@ export default function CadastroUsuario() {
             </View>
 
             <ScrollView scrollEnabled={false} style={styles.containerForm}>
-                <Text style={styles.title}>Usuário</Text>
+                <Text style={styles.title}>Email</Text>
                 <TextInput
-                    placeholder="Digite seu usuario"
+                    placeholder="Digite seu email"
                     style={styles.input}
                     value={inputUsuario}
                     onChangeText={setInputUsuario}
