@@ -8,7 +8,7 @@ export default function EyeButtom({estado, mudarValor}) {
 
     <View style={styles.container}>
         <TouchableOpacity style={styles.buttom} onPress={mudarValor}>
-            <Feather name={estado ? 'eye-off' : 'eye'} size={25}/>
+            <Feather name={estado ? 'eye' : 'eye-off'} size={25}/>
         </TouchableOpacity>
     </View>
    

@@ -7,6 +7,9 @@ import { useNavigation } from "@react-navigation/native";
 import * as SQLite from 'expo-sqlite';
 import { Alert } from 'react-native';
 
+import { auth } from "../../Config";
+import { signInWithEmailAndPassword } from "firebase/auth";
+
 export default function Login() {
 
     const navigate = useNavigation()
@@ -19,12 +22,32 @@ export default function Login() {
         getLista()
     }, [])
 
+    const handleLogin = (result) => {
+        signInWithEmailAndPassword(auth, inputUsuario, inputSenha)
+            .then((userCredentials) => {
+                const user = userCredentials.user;
+
+                if (!user.emailVerified) {
+                    // Se o email não for verificado
+                    Alert.alert("Erro", "Por favor, verifique seu e-mail antes de continuar.", [{ text: "OK" }]);
+                    return;
+                }
+
+                // Redirecionar para a tela principal após login bem-sucedido
+                navigate.navigate('Home', { usuario: result.nome, id: result.id });
+            })
+            .catch((error) => {
+                Alert.alert("Erro", error.message, [{ text: "OK" }]);
+            });
+    };
+
     const showError = (message) => {
         Alert.alert("Erro", message, [{ text: "OK" }]);
     };
 
     const mudarVisibilidadeSenha = () => {
         setMostrarSenha(!mostrarSenha);
+        
     };
 
     async function getLista() {
@@ -32,7 +55,7 @@ export default function Login() {
         await db.execAsync(`
             PRAGMA journal_mode = WAL;
             CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY NOT NULL, usuario TEXT NOT NULL, senha TEXT NOT NULL);
-            `);    
+            `);
     }
 
     async function verificacao() {
@@ -41,7 +64,7 @@ export default function Login() {
         if (result) {
             setInputUsuarios('');
             setInputSenha('');
-            navigate.navigate('Home', { usuario: result.nome, id: result.id });
+            handleLogin(result);
         } else {
             showError('Usuário e senha inválidos ou usuário não cadastrado');
         }
@@ -74,9 +97,9 @@ export default function Login() {
                     secureTextEntry={!mostrarSenha}
                     onChangeText={setInputSenha}
                     right={<TextInput.Icon icon={mostrarSenha ? 'eye' : 'eye-off'} onPress={mudarVisibilidadeSenha} />}
-                    
+
                 />
-                
+
                 <TouchableOpacity
                     style={styles.button}
                     onPress={verificacao}
@@ -91,12 +114,12 @@ export default function Login() {
                     <Text style={styles.registerText}>Não possui uma conta? Cadastre-se</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     style={styles.buttonTest}
                     onPress={() => navigate.navigate('Teste')}
                 >
                     <Text style={styles.testeText}>TESTE</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
             </ScrollView>
 

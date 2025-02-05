@@ -5,6 +5,10 @@ import { useNavigation } from "@react-navigation/native";
 import * as SQLite from 'expo-sqlite';
 import { Alert } from 'react-native';
 import { TextInput } from "react-native-paper";
+import { auth } from "../../Config";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+
+
 
 export default function CadastroUsuario() {
 
@@ -16,6 +20,38 @@ export default function CadastroUsuario() {
     const [inputSenha, setInputSenha] = useState('');
     const [inputSenhaVilidacao, setInputSenhaVilidacao] = useState('');
 
+
+    const handleSignUp = () => {
+        if (inputSenha !== inputSenhaVilidacao) {
+            Alert.alert("Erro", "As senhas não coincidem", [{ text: "OK" }]);
+            return;
+        }
+
+        createUserWithEmailAndPassword(auth, inputUsuario, inputSenha)
+            .then((userCredentials) => {
+                const user = userCredentials.user;
+
+                // Enviar o email de verificação
+                sendEmailVerification(user)
+                    .then(() => {
+                        // Redirecionar para a tela de confirmação
+                        navigate.navigate('ConfirmacaoEmail');
+                    })
+                    .catch((error) => {
+                        Alert.alert("Erro", "Não foi possível enviar o email de verificação. Tente novamente.", [{ text: "OK" }]);
+                    });
+            })
+            .catch((error) => {
+                Alert.alert("Erro", error.message, [{ text: "OK" }]);
+            });
+    };
+
+    const validarEmail = (email) => {
+        // Expressão regular para validar o formato do e-mail
+        const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
+        return regex.test(email);
+    };
 
 
     useEffect(() => {
@@ -34,16 +70,21 @@ export default function CadastroUsuario() {
         const db = await SQLite.openDatabaseAsync('databaseUsuarios');
         if (inputUsuario === '' || inputSenha === '') {
             showError('Por favor, preencha todos os campos');
-        }else if(inputUsuario.length < 5){
+        } else if (!validarEmail(inputUsuario)) {
+            showError('Email Inválido');
+        } else if (inputUsuario.length < 5) {
             showError('A usuario deve ter pelo menos 5 caracteres');
         } else if (inputSenha === '' || inputSenhaVilidacao === '') {
             showError('As duas senhas são obrigatórias');
         } else if (inputSenha !== inputSenhaVilidacao) {
             showError('As senhas não coincidem');
-        } else if(inputSenha.length < 6){
+        } else if (inputSenha.length < 6) {
             showError('A senha deve ter pelo menos 6 caracteres')
         } else {
             try {
+
+
+
                 const result = await db.getFirstAsync('SELECT * FROM usuarios WHERE usuario = ?', [inputUsuario]);
                 if (result) {
                     showError('Usuario já cadastradado cadastrado');
@@ -53,7 +94,7 @@ export default function CadastroUsuario() {
                     setInputSenhaVilidacao('')
                 } else {
                     await db.runAsync('INSERT INTO usuarios (usuario, nome, senha) VALUES (?, ?, ?)', inputUsuario, inputUsuarioNome, inputSenha);
-                    navigate.navigate('Login');
+                    handleSignUp()
                 }
             } catch (error) {
                 console.log('Erro ao acessar o banco de dados', error);
