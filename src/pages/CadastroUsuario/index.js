@@ -87,13 +87,13 @@ export default function CadastroUsuario() {
 
                 const result = await db.getFirstAsync('SELECT * FROM usuarios WHERE usuario = ?', [inputUsuario]);
                 if (result) {
-                    showError('Usuario já cadastradado cadastrado');
+                    showError('Usuario já cadastradado');
                     setInputUsuario('');
                     setInputUsuarioNome('');
                     setInputSenha('');
                     setInputSenhaVilidacao('')
                 } else {
-                    await db.runAsync('INSERT INTO usuarios (usuario, nome, senha) VALUES (?, ?, ?)', inputUsuario, inputUsuarioNome, inputSenha);
+                    await db.runAsync('INSERT INTO usuarios (usuario, nome) VALUES (?, ?)', inputUsuario, inputUsuarioNome);
                     handleSignUp()
                 }
             } catch (error) {
@@ -106,7 +106,7 @@ export default function CadastroUsuario() {
         const db = await SQLite.openDatabaseAsync('databaseUsuarios');
         await db.execAsync(`
                   PRAGMA journal_mode = WAL;
-                  CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY NOT NULL, usuario TEXT NOT NULL, nome TEXT NOT NULL, senha TEXT NOT NULL);
+                  CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY NOT NULL, usuario TEXT NOT NULL, nome TEXT NOT NULL);
                   `);
     }
 

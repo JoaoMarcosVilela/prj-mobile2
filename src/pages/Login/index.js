@@ -37,9 +37,11 @@ export default function Login() {
                 navigate.navigate('Home', { usuario: result.nome, id: result.id });
             })
             .catch((error) => {
-                Alert.alert("Erro", error.message, [{ text: "OK" }]);
+                Alert.alert("Erro", 'Senha incorreta', [{ text: "OK" }]);
             });
     };
+
+    
 
     const showError = (message) => {
         Alert.alert("Erro", message, [{ text: "OK" }]);
@@ -47,20 +49,20 @@ export default function Login() {
 
     const mudarVisibilidadeSenha = () => {
         setMostrarSenha(!mostrarSenha);
-        
+
     };
 
     async function getLista() {
         const db = await SQLite.openDatabaseAsync('databaseUsuarios');
         await db.execAsync(`
             PRAGMA journal_mode = WAL;
-            CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY NOT NULL, usuario TEXT NOT NULL, senha TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY NOT NULL, usuario TEXT NOT NULL);
             `);
     }
 
     async function verificacao() {
         const db = await SQLite.openDatabaseAsync('databaseUsuarios');
-        const result = await db.getFirstAsync('SELECT * FROM usuarios WHERE usuario = ? AND senha = ?', [inputUsuario, inputSenha]);
+        const result = await db.getFirstAsync('SELECT * FROM usuarios WHERE usuario = ?', [inputUsuario]);
         if (result) {
             setInputUsuarios('');
             setInputSenha('');
@@ -111,6 +113,13 @@ export default function Login() {
                     onPress={() => navigate.navigate('CadastroUsuario')}
                 >
                     <Text style={styles.registerText}>Não possui uma conta? Cadastre-se</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity
+                    style={styles.buttonRegister}
+                    onPress={() => navigate.navigate('RecuperarConta')}
+                >
+                    <Text style={styles.registerText}>Esqueci minha senha</Text>
                 </TouchableOpacity>
 
                 {/* <TouchableOpacity

@@ -7,6 +7,7 @@ import CadastroUsuario from "../pages/CadastroUsuario";
 import CadastroMovimentacao from "../pages/CadastroMovimentacao";
 import MostarBanco from "../pages/MostrarBanco";
 import ConfirmacaoEmail from "../pages/ConfirmacaoEmail";
+import RecuperarConta from "../pages/RecuperarConta";
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +32,11 @@ export default function Routes(){
             <Stack.Screen
                 name="CadastroUsuario"
                 component={CadastroUsuario}
+                options={{ headerShown: false}}
+            />
+            <Stack.Screen
+                name="RecuperarConta"
+                component={RecuperarConta}
                 options={{ headerShown: false}}
             />
             <Stack.Screen
